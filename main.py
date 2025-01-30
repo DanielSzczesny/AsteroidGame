@@ -11,6 +11,7 @@ from shot import Shot
 def main():
 	pygame.init()
 	screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
+	font = pygame.font.Font(pygame.font.get_default_font(), 20)
 
 	clock = pygame.time.Clock()
 	dt = 0
@@ -22,7 +23,7 @@ def main():
 
 	Player.containers = (updatable, drawable)
 	Asteroid.containers = (asteroids, updatable, drawable)
-	AsteroidField.containers = (updatable)
+	AsteroidField.containers = updatable
 	Shot.containers = (shots, updatable, drawable)
 
 	AsteroidField()
@@ -34,6 +35,8 @@ def main():
 				return
 
 		screen.fill((0, 0, 0))
+		point_label = pygame.font.Font.render(font, f"Score: {player.get_points()}", True, "blue")
+		screen.blit(point_label, (0, 0))
 
 		updatable.update(dt)
 		for element in drawable:
@@ -41,12 +44,14 @@ def main():
 
 		for asteroid in asteroids:
 			if player.check_collision(asteroid):
+				print(f"Points: {player.get_points()}")
 				print("Game over!")
 				sys.exit()
 			for shot in shots:
 				if asteroid.check_collision(shot):
 					shot.kill()
 					asteroid.split()
+					player.add_points()
 
 		pygame.display.flip()
 		tick = clock.tick(60)
