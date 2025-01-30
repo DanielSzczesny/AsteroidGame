@@ -39,10 +39,14 @@ def main():
 		for element in drawable:
 			element.draw(screen)
 
-		for element in asteroids:
-			if player.check_collision(element):
+		for asteroid in asteroids:
+			if player.check_collision(asteroid):
 				print("Game over!")
 				sys.exit()
+			for shot in shots:
+				if asteroid.check_collision(shot):
+					shot.kill()
+					asteroid.kill()
 
 		pygame.display.flip()
 		tick = clock.tick(60)
